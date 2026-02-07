@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+<title>PrankVerse</title>
+<style>
+/* ======================== CSS VARIABLES & THEMES ======================== */
+:root {
+  /* ---- DEVELOPER CUSTOMIZATION ---- */
+  --app-name: "PrankVerse";
+  /* ---- Theme: Light (default) ---- */
+  --bg-primary: #f0f2f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #555;
+  --accent: #6c5ce7;
+  --accent2: #a29bfe;
+  --accent-glow: rgba(108,92,231,0.3);
+  --border: rgba(0,0,0,0.08);
+  --shadow: rgba(0,0,0,0.1);
+  --card-radius: 18px;
+  --overlay-bg: rgba(0,0,0,0.5);
+  --gradient1: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  --gradient2: linear-gradient(135deg, #fd79a8, #e17055);
+  --gradient3: linear-gradient(135deg, #00b894, #00cec9);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0a0a1a;
+  --bg-secondary: #16162a;
+  --bg-card: #1e1e3a;
+  --text-primary: #e0e0ff;
+  --text-secondary: #aaa;
+  --accent: #7c6cf0;
+  --accent2: #b8b0ff;
+  --accent-glow: rgba(124,108,240,0.4);
+  --border: rgba(255,255,255,0.08);
+  --shadow: rgba(0,0,0,0.4);
+}
+
+/* Social icons hover effect */
+.dev-socials span {
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.dev-socials span:hover {
+  transform: scale(1.2);
+  background: var(--accent-glow);
+}
+
+[data-theme="neon"] {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #1a1a1a;
+  --bg-card: #1f1f1f;
+  --text-primary: #00ff88;
+  --text-secondary: #00cc6a;
+  --accent: #ff00ff;
+  --accent2: #00ffff;
+  --accent-glow: rgba(255,0,255,0.5);
+  --border: rgba(0,255,136,0.2);
+  --shadow: rgba(255,0,255,0.3);
+  --gradient1: linear-gradient(135deg, #ff00ff, #00ffff);
+  --gradient2: linear-gradient(135deg, #ff0066, #ffcc00);
+  --gradient3: linear-gradient(135deg, #00ff88, #00ccff);
+}
+
+[data-theme="glass"] {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: rgba(255,255,255,0.05);
+  --bg-card: rgba(255,255,255,0.08);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255,255,255,0.7);
+  --accent: #6c5ce7;
+  --accent2: #a29bfe;
+  --accent-glow: rgba(108,92,231,0.4);
+  --border: rgba(255,255,255,0.15);
+  --shadow: rgba(0,0,0,0.2);
+}
+
+[data-theme="cyber"] {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-card: #0f0f0f;
+  --text-primary: #00ff00;
+  --text-secondary: #00aa00;
+  --accent: #00ff00;
+  --accent2: #33ff33;
+  --accent-glow: rgba(0,255,0,0.4);
+  --border: rgba(0,255,0,0.2);
+  --shadow: rgba(0,255,0,0.2);
+  --gradient1: linear-gradient(135deg, #00ff00, #003300);
+  --gradient2: linear-gradient(135deg, #00ff00, #00aa00);
+  --gradient3: linear-gradient(135deg, #003300, #00ff00);
+}
+
+/* ======================== BASE STYLES ======================== */
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  width:100%; height:100%;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body { display:flex; flex-direction:column; min-height:100vh; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--accent); border-radius:10px; }
+
+/* ======================== HEADER ======================== */
+.header {
+  position: sticky; top:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.header-logo {
+  display:flex; align-items:center; gap:8px;
+  font-size:1.4rem; font-weight:800;
+  background: var(--gradient1);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.header-logo span { font-size:1.6rem; }
+.menu-btn {
+  width:40px; height:40px; border:none; border-radius:12px;
+  background: var(--bg-card); color: var(--text-primary);
+  font-size:1.4rem; cursor:pointer; display:flex;
+  align-items:center; justify-content:center;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.menu-btn:hover { background:var(--accent); color:#fff; }
+
+/* ======================== MAIN CONTENT ======================== */
+.main { flex:1; padding:12px; max-width:600px; width:100%; margin:0 auto; }
+
+/* Upload Section */
+.upload-section {
+  background: var(--gradient1);
+  border-radius: var(--card-radius);
+  padding: 20px; margin-bottom:16px;
+  text-align:center; color:#fff;
+  position:relative; overflow:hidden;
+}
+.upload-section::before {
+  content:''; position:absolute; top:-50%; left:-50%;
+  width:200%; height:200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+  animation: shimmer 3s infinite;
+}
+@keyframes shimmer { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(180deg);} }
+.upload-section h3 { font-size:1rem; margin-bottom:8px; position:relative; }
+.upload-preview {
+  width:70px; height:70px; border-radius:50%; border:3px solid rgba(255,255,255,0.5);
+  display:inline-block; overflow:hidden; margin-bottom:8px; position:relative;
+  background: rgba(255,255,255,0.15);
+}
+.upload-preview img { width:100%; height:100%; object-fit:cover; }
+.upload-preview .placeholder { font-size:2rem; line-height:64px; }
+.upload-btn-wrap { position:relative; display:inline-block; }
+.upload-btn {
+  padding:8px 20px; border-radius:30px;
+  background: rgba(255,255,255,0.2); color:#fff;
+  border:1px solid rgba(255,255,255,0.3);
+  font-size:0.85rem; cursor:pointer; position:relative;
+  backdrop-filter:blur(10px); transition:all 0.3s;
+}
+.upload-btn:hover { background:rgba(255,255,255,0.35); }
+.upload-btn input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+
+/* Section Title */
+.section-title {
+  font-size:1.1rem; font-weight:700; margin:16px 0 10px;
+  display:flex; align-items:center; gap:6px;
+}
+
+/* Prank Grid */
+.prank-grid {
+  display:grid; grid-template-columns: repeat(2, 1fr);
+  gap:12px; margin-bottom:20px;
+}
+.prank-card {
+  background: var(--bg-card);
+  border:1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding:16px 12px; text-align:center;
+  cursor:pointer; transition: all 0.3s;
+  position:relative; overflow:hidden;
+}
+.prank-card:hover { transform:translateY(-3px); box-shadow: 0 8px 25px var(--shadow); }
+.prank-card:active { transform:scale(0.97); }
+.prank-card .icon {
+  font-size:2.2rem; margin-bottom:8px; display:block;
+  filter: drop-shadow(0 2px 4px var(--shadow));
+}
+.prank-card .title { font-size:0.82rem; font-weight:700; margin-bottom:4px; }
+.prank-card .desc { font-size:0.68rem; color:var(--text-secondary); line-height:1.3; }
+.prank-card.premium-locked { opacity:0.75; }
+.prank-card.premium-locked::after {
+  content:'🔒'; position:absolute; top:8px; right:8px; font-size:0.9rem;
+}
+.prank-card .tag {
+  display:inline-block; padding:2px 8px; border-radius:10px;
+  font-size:0.6rem; font-weight:700; margin-top:6px;
+  background: var(--gradient2); color:#fff;
+}
+
+/* ======================== SIDE PANEL ======================== */
+.overlay {
+  position:fixed; inset:0; background:var(--overlay-bg);
+  z-index:200; opacity:0; pointer-events:none;
+  transition: opacity 0.3s;
+}
+.overlay.active { opacity:1; pointer-events:all; }
+.side-panel {
+  position:fixed; top:0; right:-320px; width:300px; max-width:85vw;
+  height:100%; background:var(--bg-secondary); z-index:201;
+  transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+  overflow-y:auto; box-shadow: -4px 0 30px var(--shadow);
+}
+.side-panel.active { right:0; }
+.panel-header {
+  padding:20px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.panel-header h3 { font-size:1.1rem; font-weight:700; }
+.panel-close {
+  width:34px; height:34px; border:none; border-radius:10px;
+  background:var(--bg-card); color:var(--text-primary);
+  font-size:1.1rem; cursor:pointer; display:flex;
+  align-items:center; justify-content:center; border:1px solid var(--border);
+}
+.panel-item {
+  padding:14px 16px; display:flex; align-items:center; gap:12px;
+  border-bottom:1px solid var(--border); cursor:pointer;
+  transition: background 0.2s; font-size:0.9rem; font-weight:500;
+}
+.panel-item:hover { background:var(--accent-glow); }
+.panel-item .pi-icon {
+  width:36px; height:36px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; background:var(--bg-card); border:1px solid var(--border);
+}
+
+/* ======================== MODALS / FULLSCREEN PRANKS ======================== */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.85);
+  z-index:300; display:none; align-items:center; justify-content:center;
+  padding:12px;
+}
+.modal-overlay.active { display:flex; }
+.modal-content {
+  background:var(--bg-secondary); border-radius:20px;
+  width:100%; max-width:400px; max-height:90vh;
+  overflow-y:auto; padding:24px; position:relative;
+  animation: modalIn 0.35s ease;
+}
+@keyframes modalIn {
+  from { transform:scale(0.8) translateY(30px); opacity:0; }
+  to { transform:scale(1) translateY(0); opacity:1; }
+}
+.modal-close {
+  position:absolute; top:12px; right:12px;
+  width:32px; height:32px; border:none; border-radius:50%;
+  background:var(--bg-card); color:var(--text-primary);
+  font-size:1rem; cursor:pointer; display:flex;
+  align-items:center; justify-content:center; border:1px solid var(--border);
+  z-index:5;
+}
+.modal-content h3 { font-size:1.15rem; font-weight:700; margin-bottom:12px; }
+.modal-content p { font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+
+/* Dev Profile */
+.dev-profile { text-align:center; padding:10px 0; }
+.dev-avatar {
+  width:90px; height:90px; border-radius:50%; margin:0 auto 12px;
+  overflow:hidden; border:3px solid var(--accent);
+  background:var(--bg-card);
+}
+.dev-avatar img { width:100%; height:100%; object-fit:cover; }
+.dev-name { font-size:1.1rem; font-weight:700; }
+.dev-bio { font-size:0.8rem; color:var(--text-secondary); margin:6px 0 12px; }
+.dev-socials { display:flex; justify-content:center; gap:10px; }
+.dev-socials span {
+  width:36px; height:36px; border-radius:10px;
+  background:var(--bg-card); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; cursor:pointer;
+}
+
+/* Steps */
+.step-item {
+  display:flex; align-items:flex-start; gap:12px; margin-bottom:14px;
+}
+.step-num {
+  min-width:30px; height:30px; border-radius:10px;
+  background:var(--gradient1); color:#fff; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.8rem;
+}
+.step-text { font-size:0.85rem; line-height:1.5; }
+.step-text strong { display:block; margin-bottom:2px; }
+
+/* Theme Chooser */
+.theme-grid {
+  display:grid; grid-template-columns: repeat(3,1fr);
+  gap:10px; margin-top:12px;
+}
+.theme-option {
+  padding:14px 8px; border-radius:14px; text-align:center;
+  border:2px solid var(--border); cursor:pointer;
+  transition:all 0.3s; font-size:0.75rem; font-weight:600;
+}
+.theme-option:hover, .theme-option.active {
+  border-color:var(--accent); box-shadow:0 0 15px var(--accent-glow);
+}
+.theme-option .t-preview {
+  width:40px; height:40px; border-radius:10px; margin:0 auto 6px;
+  display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+}
+.t-light { background:linear-gradient(135deg,#f0f2f5,#fff); }
+.t-dark { background:linear-gradient(135deg,#1a1a2e,#16162a); }
+.t-neon { background:linear-gradient(135deg,#0d0d0d,#ff00ff); }
+.t-glass { background:linear-gradient(135deg,#1a1a2e,rgba(255,255,255,0.1)); }
+.t-cyber { background:linear-gradient(135deg,#000,#00ff00); }
+.theme-option.locked { opacity:0.5; position:relative; }
+.theme-option.locked::after {
+  content:'🔒'; position:absolute; top:4px; right:4px; font-size:0.7rem;
+}
+
+/* Premium Section */
+.premium-box {
+  text-align:center; padding:10px 0;
+}
+.premium-box .qr-placeholder {
+  width:180px; height:180px; margin:12px auto; border-radius:14px;
+  border:2px dashed var(--border); display:flex; overflow:hidden;
+  align-items:center; justify-content:center; background:var(--bg-card);
+}
+.premium-box .qr-placeholder img { width:100%; height:100%; object-fit:contain; }
+.premium-box .price {
+  font-size:1.4rem; font-weight:800; color:var(--accent); margin:8px 0;
+}
+.code-input-wrap {
+  display:flex; gap:8px; margin-top:12px;
+}
+.code-input-wrap input {
+  flex:1; padding:10px 14px; border-radius:12px;
+  border:1px solid var(--border); background:var(--bg-card);
+  color:var(--text-primary); font-size:0.9rem; outline:none;
+}
+.code-input-wrap input:focus { border-color:var(--accent); }
+.btn-primary {
+  padding:10px 20px; border-radius:12px; border:none;
+  background:var(--gradient1); color:#fff; font-weight:700;
+  cursor:pointer; font-size:0.85rem; transition:all 0.3s;
+}
+.btn-primary:hover { opacity:0.9; transform:scale(1.02); }
+
+/* Feedback */
+.feedback-form { margin-top:10px; }
+.feedback-form .fg {
+  margin-bottom:12px;
+}
+.feedback-form label {
+  display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px;
+}
+.feedback-form input, .feedback-form textarea {
+  width:100%; padding:10px 14px; border-radius:12px;
+  border:1px solid var(--border); background:var(--bg-card);
+  color:var(--text-primary); font-size:0.85rem; outline:none;
+  font-family:inherit; resize:none;
+}
+.feedback-form input:focus, .feedback-form textarea:focus { border-color:var(--accent); }
+
+/* Success anim */
+.success-anim {
+  display:none; text-align:center; padding:30px 0;
+}
+.success-anim.show { display:block; }
+.success-anim .check { font-size:3rem; animation: popIn 0.5s ease; }
+@keyframes popIn { from{transform:scale(0);} to{transform:scale(1);} }
+.success-anim p { margin-top:8px; font-weight:600; }
+
+/* ======================== FULLSCREEN PRANK SCREENS ======================== */
+.prank-fullscreen {
+  position:fixed; inset:0; z-index:500;
+  display:none; flex-direction:column;
+  align-items:center; justify-content:center;
+  animation: fadeInPrank 0.3s ease;
+}
+.prank-fullscreen.active { display:flex; }
+@keyframes fadeInPrank { from{opacity:0;} to{opacity:1;} }
+
+.prank-exit {
+  position:fixed; top:8px; left:8px; z-index:550;
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(0,0,0,0.5); color:#fff; border:none;
+  font-size:1.2rem; cursor:pointer; display:flex;
+  align-items:center; justify-content:center;
+  backdrop-filter:blur(10px);
+}
+
+/* Fake Call */
+.fake-call-screen {
+  background: linear-gradient(180deg, #1a1a2e 0%, #0a0a1a 100%);
+  color:#fff; text-align:center; padding:40px 20px;
+}
+.fake-call-screen .caller-img {
+  width:100px; height:100px; border-radius:50%; margin:0 auto 16px;
+  overflow:hidden; border:3px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.1);
+}
+.fake-call-screen .caller-img img { width:100%; height:100%; object-fit:cover; }
+.fake-call-screen .caller-name { font-size:1.6rem; font-weight:700; }
+.fake-call-screen .call-status { font-size:0.9rem; color:rgba(255,255,255,0.6); margin-top:6px; }
+.call-actions {
+  position:absolute; bottom:60px; left:0; right:0;
+  display:flex; justify-content:center; gap:50px;
+}
+.call-btn {
+  width:64px; height:64px; border-radius:50%; border:none;
+  font-size:1.8rem; cursor:pointer; display:flex;
+  align-items:center; justify-content:center;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100%{transform:scale(1);} 50%{transform:scale(1.1);}
+}
+.call-accept { background:#4cd137; color:#fff; }
+.call-decline { background:#e84118; color:#fff; animation-delay:0.5s; }
+
+/* Fake WhatsApp */
+.fake-whatsapp {
+  background:#e5ddd5; width:100%; height:100%; flex-direction:column;
+}
+[data-theme="dark"] .fake-whatsapp,
+[data-theme="neon"] .fake-whatsapp,
+[data-theme="cyber"] .fake-whatsapp,
+[data-theme="glass"] .fake-whatsapp { background:#0b141a; }
+.wa-header {
+  background:#075e54; color:#fff; padding:12px 16px;
+  display:flex; align-items:center; gap:10px;
+}
+.wa-header .wa-avatar {
+  width:36px; height:36px; border-radius:50%; overflow:hidden;
+  background:rgba(255,255,255,0.2);
+}
+.wa-header .wa-avatar img { width:100%; height:100%; object-fit:cover; }
+.wa-header .wa-name { font-weight:600; font-size:0.95rem; }
+.wa-header .wa-online { font-size:0.7rem; opacity:0.7; }
+.wa-messages { flex:1; padding:12px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
+.wa-msg {
+  max-width:80%; padding:8px 12px; border-radius:10px;
+  font-size:0.85rem; line-height:1.4; position:relative;
+  animation: msgIn 0.3s ease;
+}
+@keyframes msgIn { from{transform:translateY(10px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+.wa-msg.received {
+  background:#fff; align-self:flex-start; border-top-left-radius:0;
+  color:#000;
+}
+[data-theme="dark"] .wa-msg.received,
+[data-theme="neon"] .wa-msg.received,
+[data-theme="cyber"] .wa-msg.received,
+[data-theme="glass"] .wa-msg.received { background:#1f2c34; color:#e0e0e0; }
+.wa-msg.sent {
+  background:#dcf8c6; align-self:flex-end; border-top-right-radius:0;
+  color:#000;
+}
+[data-theme="dark"] .wa-msg.sent,
+[data-theme="neon"] .wa-msg.sent,
+[data-theme="cyber"] .wa-msg.sent,
+[data-theme="glass"] .wa-msg.sent { background:#005c4b; color:#e0e0e0; }
+.wa-msg .time { font-size:0.6rem; opacity:0.5; text-align:right; margin-top:3px; }
+
+/* Battery Low */
+.fake-battery {
+  background:#000; color:#fff; text-align:center;
+}
+.battery-icon { font-size:5rem; animation: batteryPulse 1s infinite; }
+@keyframes batteryPulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.battery-pct { font-size:3rem; font-weight:800; color:#e84118; margin:10px 0; }
+.battery-text { font-size:1rem; color:#aaa; }
+
+/* Virus Scan */
+.fake-virus {
+  background:#1a0000; color:#ff0000; text-align:center; padding:20px;
+}
+.virus-icon { font-size:4rem; animation: shake 0.3s infinite; }
+@keyframes shake {
+  0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);}
+}
+.virus-title { font-size:1.4rem; font-weight:800; margin:12px 0; }
+.virus-bar {
+  width:80%; height:12px; border-radius:10px; background:#330000;
+  margin:16px auto; overflow:hidden;
+}
+.virus-bar-fill {
+  height:100%; width:0; background:linear-gradient(90deg,#ff0000,#ff6600);
+  border-radius:10px; transition: width 0.3s;
+}
+.virus-found { font-size:1.1rem; font-weight:700; margin-top:12px; }
+.virus-list { font-size:0.8rem; text-align:left; max-width:280px; margin:10px auto 0; color:#ff6666; }
+
+/* System Update */
+.fake-update {
+  background:#0078d7; color:#fff; text-align:center;
+}
+.update-icon { font-size:3.5rem; animation: spin 3s linear infinite; }
+@keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+.update-pct { font-size:2.5rem; font-weight:800; margin:16px 0 6px; }
+.update-text { font-size:0.9rem; opacity:0.8; }
+.update-warn { font-size:0.75rem; opacity:0.5; margin-top:20px; }
+
+/* Broken Screen */
+.fake-broken {
+  background:#000; position:relative;
+}
+.crack-overlay {
+  position:absolute; inset:0; z-index:2;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255,255,255,0.03) 10px,
+    rgba(255,255,255,0.03) 11px
+  );
+}
+.crack-lines {
+  position:absolute; inset:0; z-index:3; overflow:hidden;
+}
+.crack-line {
+  position:absolute; background:rgba(255,255,255,0.15);
+  transform-origin:center; height:1px;
+}
+
+/* Police Call */
+.fake-police {
+  background:#000; color:#fff; text-align:center;
+  animation: policeFlash 0.5s infinite alternate;
+}
+@keyframes policeFlash {
+  0%{background:rgba(0,0,255,0.3);} 100%{background:rgba(255,0,0,0.3);}
+}
+.police-icon { font-size:4rem; }
+.police-title { font-size:1.3rem; font-weight:800; margin:10px 0; }
+
+/* Instagram Ban */
+.fake-insta {
+  background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);
+  color:#fff; text-align:center; padding:30px 20px;
+}
+.insta-icon { font-size:4rem; margin-bottom:12px; }
+.insta-title { font-size:1.3rem; font-weight:800; }
+.insta-msg { font-size:0.85rem; opacity:0.9; margin:12px 0; line-height:1.5; }
+.insta-id { font-size:0.8rem; background:rgba(0,0,0,0.2); padding:8px 16px; border-radius:10px; display:inline-block; margin-top:8px; }
+
+/* OTP */
+.fake-otp {
+  background:var(--bg-primary); color:var(--text-primary); text-align:center; padding:20px;
+}
+.otp-header { display:flex; align-items:center; gap:10px; margin-bottom:20px; justify-content:center; }
+.otp-icon { font-size:2.5rem; }
+.otp-digits {
+  display:flex; gap:10px; justify-content:center; margin:20px 0;
+}
+.otp-digit {
+  width:45px; height:55px; border-radius:12px;
+  background:var(--bg-card); border:2px solid var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; font-weight:800;
+  animation: otpPop 0.3s ease;
+}
+@keyframes otpPop { from{transform:scale(0);} to{transform:scale(1);} }
+
+/* Overheat */
+.fake-heat {
+  background:linear-gradient(180deg,#ff4500,#8b0000);
+  color:#fff; text-align:center; padding:30px 20px;
+}
+.heat-icon { font-size:4rem; animation: heatPulse 0.5s infinite alternate; }
+@keyframes heatPulse { from{filter:brightness(1);} to{filter:brightness(1.5);} }
+.heat-temp { font-size:3rem; font-weight:800; margin:10px 0; }
+
+/* Crash Loop */
+.fake-crash {
+  background:#000; color:#fff; text-align:center;
+}
+.crash-box {
+  background:#333; padding:20px 30px; border-radius:14px;
+  border:1px solid #555;
+}
+.crash-icon { font-size:2.5rem; margin-bottom:8px; }
+.crash-title { font-size:1rem; font-weight:700; }
+.crash-msg { font-size:0.8rem; color:#aaa; margin:6px 0 12px; }
+.crash-btn-fake {
+  padding:8px 24px; border-radius:10px; border:none;
+  background:#555; color:#fff; font-size:0.85rem; cursor:pointer;
+}
+
+/* Payment */
+.fake-payment {
+  text-align:center; padding:30px 20px;
+}
+.fake-payment.success { background:#00b894; color:#fff; }
+.fake-payment.failed { background:#d63031; color:#fff; }
+.payment-icon { font-size:4rem; margin-bottom:12px; }
+.payment-amount { font-size:2rem; font-weight:800; margin:8px 0; }
+
+/* Lock Screen */
+.fake-lock {
+  background: linear-gradient(180deg,#2d3436,#000);
+  color:#fff; text-align:center; padding:40px 20px;
+}
+.lock-time { font-size:4rem; font-weight:200; }
+.lock-date { font-size:0.9rem; opacity:0.6; margin-top:4px; }
+.lock-msg-box {
+  margin-top:30px; background:rgba(255,255,255,0.1);
+  padding:14px 20px; border-radius:14px;
+  backdrop-filter:blur(10px); text-align:left;
+}
+.lock-msg-app { font-size:0.75rem; opacity:0.7; margin-bottom:4px; }
+.lock-msg-text { font-size:0.9rem; line-height:1.4; }
+
+/* Camera Recording */
+.fake-camera {
+  background:#000; color:#fff; text-align:center; position:relative;
+}
+.rec-dot {
+  width:14px; height:14px; border-radius:50%; background:#ff0000;
+  position:absolute; top:20px; left:20px;
+  animation: recBlink 1s infinite;
+}
+@keyframes recBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+.rec-label {
+  position:absolute; top:18px; left:42px;
+  font-size:0.85rem; font-weight:700; color:#ff0000;
+}
+.rec-timer {
+  position:absolute; top:18px; right:20px;
+  font-size:0.85rem; font-family:monospace; color:#ff0000;
+}
+.camera-grid {
+  position:absolute; inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:30px 30px;
+}
+.camera-crosshair {
+  width:60px; height:60px; border:2px solid rgba(255,255,255,0.3);
+  border-radius:50%; position:relative;
+}
+.camera-crosshair::before, .camera-crosshair::after {
+  content:''; position:absolute; background:rgba(255,255,255,0.3);
+}
+.camera-crosshair::before { width:1px; height:100%; left:50%; top:0; }
+.camera-crosshair::after { height:1px; width:100%; top:50%; left:0; }
+
+/* Screenshot Sound */
+.fake-screenshot {
+  background:var(--bg-primary); color:var(--text-primary);
+  text-align:center; padding:30px;
+}
+.ss-icon { font-size:4rem; margin-bottom:12px; }
+.ss-flash {
+  position:fixed; inset:0; background:#fff; z-index:600;
+  opacity:0; pointer-events:none; transition:opacity 0.1s;
+}
+.ss-flash.active { opacity:0.8; }
+
+/* Prank Setup Modal */
+.setup-modal {
+  position:fixed; inset:0; background:rgba(0,0,0,0.85);
+  z-index:400; display:none; align-items:flex-end; justify-content:center;
+}
+.setup-modal.active { display:flex; }
+.setup-content {
+  background:var(--bg-secondary); border-radius:20px 20px 0 0;
+  width:100%; max-width:500px; padding:24px; max-height:80vh; overflow-y:auto;
+  animation: slideUp 0.35s ease;
+}
+@keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
+.setup-content h3 { font-size:1.1rem; font-weight:700; margin-bottom:16px; text-align:center; }
+.setup-fg { margin-bottom:14px; }
+.setup-fg label { display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:var(--text-secondary); }
+.setup-fg input, .setup-fg select, .setup-fg textarea {
+  width:100%; padding:10px 14px; border-radius:12px;
+  border:1px solid var(--border); background:var(--bg-card);
+  color:var(--text-primary); font-size:0.9rem; outline:none;
+  font-family:inherit;
+}
+.setup-fg input:focus, .setup-fg select:focus { border-color:var(--accent); }
+.setup-actions { display:flex; gap:10px; margin-top:16px; }
+.setup-actions button { flex:1; }
+.btn-secondary {
+  padding:10px 20px; border-radius:12px; border:1px solid var(--border);
+  background:var(--bg-card); color:var(--text-primary); font-weight:600;
+  cursor:pointer; font-size:0.85rem; transition:all 0.3s;
+}
+
+/* Footer */
+.footer {
+  text-align:center; padding:16px; font-size:0.7rem;
+  color:var(--text-secondary); border-top:1px solid var(--border);
+}
+.footer span { background:var(--gradient1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-weight:700; }
+
+/* Unlocked badge */
+.premium-badge {
+  display:inline-block; padding:4px 10px; border-radius:20px;
+  background:var(--gradient2); color:#fff; font-size:0.65rem;
+  font-weight:700; margin-top:6px; animation: popIn 0.5s ease;
+}
+
+/* Responsive */
+@media(max-width:350px) {
+  .prank-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======================== HEADER ======================== -->
+<header class="header">
+  <div class="header-logo">
+    <span>🎭</span>
+    <span id="appNameDisplay">PrankVerse</span>
+  </div>
+  <button class="menu-btn" onclick="togglePanel()" aria-label="Menu">⋮</button>
+</header>
+
+<!-- ======================== SIDE PANEL OVERLAY ======================== -->
+<div class="overlay" id="overlay" onclick="togglePanel()"></div>
+<div class="side-panel" id="sidePanel">
+  <div class="panel-header">
+    <h3>⚙️ Menu</h3>
+    <button class="panel-close" onclick="togglePanel()">✕</button>
+  </div>
+  <div class="panel-item" onclick="openModal('devModal')">
+    <div class="pi-icon">👨‍💻</div> Developer Details
+  </div>
+  <div class="panel-item" onclick="openModal('howModal')">
+    <div class="pi-icon">📖</div> How to Use
+  </div>
+  <div class="panel-item" onclick="openModal('themeModal')">
+    <div class="pi-icon">🎨</div> Choose Theme
+  </div>
+  <div class="panel-item" onclick="openModal('premiumModal')">
+    <div class="pi-icon">👑</div> Premium UI
+  </div>
+  <div class="panel-item" onclick="openModal('feedbackModal')">
+    <div class="pi-icon">💬</div> Feedback
+  </div>
+ <div class="panel-item" onclick="openModal('appsModal')">
+  <div class="pi-icon">📱</div> Other Apps
+</div>
+
+  <!-- PLACEHOLDER: Add more menu items here -->
+</div>
+
+<!-- ======================== MAIN CONTENT ======================== -->
+<main class="main">
+
+  <!-- Upload Section -->
+  <div class="upload-section">
+    <div class="upload-preview" id="uploadPreview">
+      <span class="placeholder">📸</span>
+    </div>
+    <h3>Upload Your Photo for Pranks</h3>
+    <div class="upload-btn-wrap">
+      <button class="upload-btn">
+        📷 Choose Photo
+        <input type="file" accept="image/*" onchange="handleImageUpload(event)" id="imageInput">
+      </button>
+    </div>
+  </div>
+
+  <!-- Pranks Section -->
+  <div class="section-title">🎪 Choose a Prank</div>
+  <div class="prank-grid" id="prankGrid">
+    <!-- Cards injected by JS -->
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Made with ❤️ by <span id="footerDev">Ammar Shaikh</span> · <span>PrankVerse</span> v2.0
+    <!-- PLACEHOLDER: Add analytics script here -->
+    <!-- PLACEHOLDER: Add ad banner here -->
+  </div>
+</main>
+
+<!-- ======================== MODALS ======================== -->
+
+<!-- Developer Modal -->
+<div class="modal-overlay" id="devModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('devModal')">✕</button>
+    <div class="dev-profile">
+     <img
+  id="devAvatarImg"
+  src=https://image2url.com/r2/default/files/1770403992547-8bfaa812-9a04-41ea-b525-875a09889efe.webp
+  style="width:90px;height:90px;border-radius:50%;object-fit:cover;"
+  alt="Developer"
+  style="display:block;"
+>
+<span id="devAvatarPlaceholder" style="display:none;">👨‍💻</span>
+
+
+      </div>
+      <div class="dev-name" id="devNameDisplay">Ammar Shaikh</div>
+      <div class="dev-bio" id="devBioDisplay">Full-Stack Developer & Prank Enthusiast 😈<br>Building fun apps for Gen-Z!</div>
+      <div class="dev-socials">
+        <!-- PLACEHOLDER: Add real social links -->
+        <div class="dev-socials">
+  <div class="dev-socials">
+  <span onclick="openLink('https://www.instagram.com/ammar2712009')">📷</span>
+  <span onclick="openLink('https://www.facebook.com/share/1HWVrg8Pnw/')">📘</span>
+ 
+  <span onclick="openLink('https://github.com/aqmmarshaikh')">🐙</span>
+</div>
+
+  
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- How to Use Modal -->
+<div class="modal-overlay" id="howModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('howModal')">✕</button>
+    <h3>📖 How to Use</h3>
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>🎯 Select a Prank</strong>Choose from 15 awesome prank modules below</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>✏️ Customize Details</strong>Set name, message, or upload a photo for realism</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-text"><strong>📱 Give Phone to Friend</strong>Hand your phone over and watch the magic 😈</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-text"><strong>😂 Enjoy the Reaction!</strong>Capture their priceless reaction on camera!</div>
+    </div>
+    <p style="margin-top:10px; font-size:0.75rem; text-align:center; opacity:0.6;">Tap the X in top-left corner to exit any prank</p>
+  </div>
+</div>
+
+<!-- Theme Modal -->
+<div class="modal-overlay" id="themeModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('themeModal')">✕</button>
+    <h3>🎨 Choose Theme</h3>
+    <p>Personalize your PrankVerse experience!</p>
+    <div class="theme-grid" id="themeGrid">
+      <div class="theme-option active" onclick="setTheme('light')" data-theme-opt="light">
+        <div class="t-preview t-light">☀️</div>Light
+      </div>
+      <div class="theme-option" onclick="setTheme('dark')" data-theme-opt="dark">
+        <div class="t-preview t-dark">🌙</div>Dark
+      </div>
+      <div class="theme-option" onclick="setTheme('neon')" data-theme-opt="neon">
+        <div class="t-preview t-neon">💜</div>Neon
+      </div>
+      <div class="theme-option locked" onclick="setTheme('glass')" data-theme-opt="glass">
+        <div class="t-preview t-glass">💎</div>Glass
+      </div>
+      <div class="theme-option locked" onclick="setTheme('cyber')" data-theme-opt="cyber">
+        <div class="t-preview t-cyber">🖥️</div>Cyber
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Premium Modal -->
+<div class="modal-overlay" id="premiumModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('premiumModal')">✕</button>
+    <div class="premium-box">
+      <h3>👑 Unlock Premium</h3>
+      <p>Get access to premium themes + exclusive pranks!</p>
+      <div class="price">₹10 only</div>
+      <p style="font-size:0.75rem; opacity:0.7;">Scan QR to pay, then enter unlock code below</p>
+      <!-- ===== QR CODE IMAGE - REPLACE THIS ===== -->
+      <div class="qr-placeholder" id="qrPlaceholder">
+  <img
+    src=https://image2url.com/r2/default/files/1770405843602-146bf922-4e59-422b-b31f-ab55875d8864.jpg
+    alt="UPI QR Code"
+  >
+</div>
+
+      <!-- ===== END QR CODE ===== -->
+      <div class="code-input-wrap">
+        <input type="text" id="premiumCodeInput" placeholder="Enter unlock code..." maxlength="12">
+        <button class="btn-primary" onclick="checkPremiumCode()">Unlock</button>
+      </div>
+      <p id="premiumMsg" style="font-size:0.8rem; margin-top:10px; min-height:20px;"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('feedbackModal')">✕</button>
+    <h3>💬 Send Feedback</h3>
+    <div id="feedbackFormWrap">
+      <div class="feedback-form">
+        <div class="fg">
+          <label>Your Name</label>
+          <input type="text" id="fbName" placeholder="Enter your name">
+        </div>
+        <div class="fg">
+          <label>age</label>
+          <input type="age" id="fbEmail" placeholder="enter your age Please...">
+        </div>
+        <div class="fg">
+          <label>Message</label>
+          <textarea id="fbMsg" rows="4" placeholder="Tell us what you think..."></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%;" onclick="submitFeedback()">Send Feedback ✉️</button>
+      </div>
+    </div>
+    <div class="success-anim" id="feedbackSuccess">
+      <div class="check">✅</div>
+      <p>Thanks for your feedback!</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ======================== other apps  ======================== -->
+ 
+<div class="modal-overlay" id="appsModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('appsModal')">✕</button>
+
+    <h3>📱 My Other Apps</h3>
+    <p style="font-size:0.8rem; opacity:0.7;">
+      Check out my other apps 👇
+    </p>
+
+    <div class="panel-item" onclick="openLink('https://pokengo.netlify.app/')">
+      <div class="pi-icon">🎮</div>
+      Pokengo website
+    </div>
+
+    <div class="panel-item" onclick="openLink('https://onyx2520.netlify.app/')">
+      <div class="pi-icon">🤖</div>
+      onyx secret massgner 
+    </div>
+
+    <div class="panel-item" onclick="openLink('https://med-advisor-buddy.lovable.app/')">
+      <div class="pi-icon">🎨</div>
+        MedAdvisor Buddy
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ======================== PRANK SETUP MODAL ======================== -->
+<div class="setup-modal" id="setupModal">
+  <div class="setup-content" id="setupContent">
+    <!-- Dynamic content injected by JS -->
+  </div>
+</div>
+
+<!-- ======================== PRANK FULLSCREEN SCREENS ======================== -->
+<div class="prank-fullscreen" id="prankScreen">
+  <!-- Dynamic prank screen injected by JS -->
+</div>
+<div class="ss-flash" id="ssFlash"></div>
+
+<script>
+// ======================== CONFIGURATION ========================
+// ---- CHANGE THESE VARIABLES TO CUSTOMIZE ----
+const APP_NAME = "PrankVerse";
+const DEV_NAME = "Ammar Shaikh";
+const DEV_BIO = "Full-Stack Developer & Prank Enthusiast 😈\nBuilding fun apps for Gen-Z! he is very good at vibe codding... never try to unlock primium features 🤣🤣";
+// ---- DEVELOPER EMAIL for feedback ----
+const DEV_EMAIL = "ammarshaikh6100@gmail.com"; // REPLACE with real email
+// ---- PREMIUM UNLOCK CODE ----
+const PREMIUM_CODE = "AMMAR2026"; // CHANGE this code
+const FEEDBACK_WHATSAPP = "917801986978"; 
+// 👆 apna number daalo, country code ke saath, + mat lagana
+
+// ---- QR CODE: set to null to show emoji placeholder ----
+const QR_IMAGE_DATA = null; // Will be set from uploaded image if applicable
+
+let isPremium = localStorage.getItem('prankverse_premium') === 'true';
+
+let userImage = null;
+let currentTheme = 'light';
+let activePrankInterval = null;
+let activePrankTimeout = null;
+
+// ======================== PRANK DEFINITIONS ========================
+const PRANKS = [
+  { id:'fakeCall', icon:'📞', title:'Fake Incoming Call', desc:'Realistic incoming call screen', premium:false, color:'#6c5ce7' },
+  { id:'fakeWhatsapp', icon:'💬', title:'Fake WhatsApp Chat', desc:'Generate a fake chat conversation', premium:false, color:'#25d366' },
+  { id:'fakeBattery', icon:'🪫', title:'Fake Battery Low', desc:'Scary low battery alert', premium:false, color:'#e84118' },
+  { id:'fakeVirus', icon:'🦠', title:'Fake Virus Scan', desc:'Terrifying malware detection', premium:false, color:'#ff0000' },
+  { id:'fakeUpdate', icon:'🔄', title:'Fake System Update', desc:'Never-ending update screen', premium:false, color:'#0078d7' },
+  { id:'fakeBroken', icon:'💥', title:'Broken Screen', desc:'Cracked screen effect', premium:false, color:'#2d3436' },
+  { id:'fakePolice', icon:'🚔', title:'Fake Police Call', desc:'Incoming call from police!', premium:false, color:'#0000ff' },
+  { id:'fakeInsta', icon:'📸', title:'Instagram Ban Alert', desc:'Account suspended notice', premium:false, color:'#e1306c' },
+  { id:'fakeOtp', icon:'🔑', title:'Fake OTP Screen', desc:'Random OTP notification', premium:false, color:'#00b894' },
+  { id:'fakeScreenshot', icon:'📱', title:'Screenshot Sound Loop', desc:'Continuous screenshot sounds', premium:true, color:'#fdcb6e' },
+  { id:'fakeHeat', icon:'🌡️', title:'Phone Overheating', desc:'Temperature warning alert', premium:false, color:'#ff4500' },
+  { id:'fakeCrash', icon:'⚠️', title:'App Crash Loop', desc:'Apps keep crashing', premium:false, color:'#636e72' },
+  { id:'fakePayment', icon:'💳', title:'Fake Payment', desc:'Payment success/failed screen', premium:true, color:'#00b894' },
+  { id:'fakeLock', icon:'🔒', title:'Lock Screen Message', desc:'Creepy lock screen notification', premium:true, color:'#2d3436' },
+  { id:'fakeCamera', icon:'🎥', title:'Camera Recording', desc:'Someone is watching...', premium:true, color:'#d63031' },
+];
+
+// ======================== INIT ========================
+document.getElementById('appNameDisplay').textContent = APP_NAME;
+document.getElementById('footerDev').textContent = DEV_NAME;
+document.getElementById('devNameDisplay').textContent = DEV_NAME;
+document.getElementById('devBioDisplay').textContent = DEV_BIO;
+
+function renderPranks() {
+  const grid = document.getElementById('prankGrid');
+  grid.innerHTML = '';
+  PRANKS.forEach(p => {
+    const locked = p.premium && !isPremium;
+    const card = document.createElement('div');
+    card.className = 'prank-card' + (locked ? ' premium-locked' : '');
+    card.onclick = () => locked ? openModal('premiumModal') : openSetup(p.id);
+    card.innerHTML = `
+      <span class="icon">${p.icon}</span>
+      <div class="title">${p.title}</div>
+      <div class="desc">${p.desc}</div>
+      ${p.premium ? (isPremium ? '<span class="premium-badge">👑 UNLOCKED</span>' : '<span class="tag">👑 PREMIUM</span>') : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+renderPranks();
+
+// ======================== IMAGE UPLOAD ========================
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    userImage = ev.target.result;
+    document.getElementById('uploadPreview').innerHTML = `<img src="${userImage}" alt="User">`;
+    // Also set dev avatar
+    const devImg = document.getElementById('devAvatarImg');
+    devImg.src = userImage;
+    devImg.style.display = 'block';
+    document.getElementById('devAvatarPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ======================== PANEL / MODAL ========================
+function togglePanel() {
+  document.getElementById('sidePanel').classList.toggle('active');
+  document.getElementById('overlay').classList.toggle('active');
+}
+function openModal(id) {
+  togglePanel();
+  setTimeout(() => {
+    document.getElementById(id).classList.add('active');
+  }, 200);
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => {
+    if (e.target === m) m.classList.remove('active');
+  });
+});
+
+// ======================== THEME ========================
+function setTheme(theme) {
+  const premiumThemes = ['glass', 'cyber'];
+  if (premiumThemes.includes(theme) && !isPremium) {
+    closeModal('themeModal');
+    setTimeout(() => openModalDirect('premiumModal'), 300);
+    return;
+  }
+  currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  document.querySelectorAll('.theme-option').forEach(t => {
+    t.classList.toggle('active', t.dataset.themeOpt === theme);
+  });
+}
+function openModalDirect(id) {
+  document.getElementById(id).classList.add('active');
+}
+
+// ======================== PREMIUM ========================
+function checkPremiumCode() {
+  const input = document.getElementById('premiumCodeInput').value.trim();
+  const msg = document.getElementById('premiumMsg');
+
+  // ✅ RULE: exactly 12 digits, numbers only
+  const isValidRandomCode = /^[0-9]{12}$/.test(input);
+  const isAdminCode = input === PREMIUM_CODE;
+
+
+     // ✅ ADMIN OVERRIDE CODE
+  if (isAdminCode || isValidRandomCode) {
+
+    isPremium = true;
+    localStorage.setItem('prankverse_premium', 'true');
+
+    document.querySelectorAll('.premium-locked').forEach(el => {
+      el.classList.remove('premium-locked');
+    });
+
+    document.querySelectorAll('.theme-option.locked').forEach(t => {
+      t.classList.remove('locked');
+    });
+
+    renderPranks();
+
+    msg.style.color = '#00b894';
+    msg.textContent = '🎉 Premium Unlocked Successfully!';
+
+    setTimeout(() => {
+      closeModal('premiumModal');
+    }, 1200);
+
+  } else {
+    msg.style.color = '#d63031';
+    msg.textContent = '❌ BETA BAPP NAHI HU JO FREE MAI DUNGA 😂';
+  }
+}
+
+// ======================== FEEDBACK ========================
+function submitFeedback() {
+  const name = document.getElementById('fbName').value.trim();
+  const email = document.getElementById('fbEmail').value.trim();
+  const message = document.getElementById('fbMsg').value.trim();
+
+  if (!name || !message) {
+    alert('Please fill name and message');
+    return;
+  }
+
+  const subject = encodeURIComponent(`PrankVerse Feedback from ${name}`);
+  const body = encodeURIComponent(
+    `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+  );
+
+  // ✅ REAL EMAIL SEND
+ const waMsg =
+  `📩 *PrankVerse Feedback*%0A%0A` +
+  `👤 Name: ${name}%0A` +
+  `📧 Email: ${email}%0A%0A` +
+  `💬 Message:%0A${message}`;
+
+window.open(
+  `https://wa.me/${FEEDBACK_WHATSAPP}?text=${waMsg}`,
+  '_blank'
+);
+
+  // UI success animation
+  document.getElementById('feedbackFormWrap').style.display = 'none';
+  document.getElementById('feedbackSuccess').classList.add('show');
+
+  setTimeout(() => {
+    document.getElementById('feedbackFormWrap').style.display = 'block';
+    document.getElementById('feedbackSuccess').classList.remove('show');
+    document.getElementById('fbName').value = '';
+    document.getElementById('fbEmail').value = '';
+    document.getElementById('fbMsg').value = '';
+    closeModal('feedbackModal');
+  }, 2500);
+}
+
+// ======================== PRANK SETUP ========================
+function openSetup(prankId) {
+  const modal = document.getElementById('setupModal');
+  const content = document.getElementById('setupContent');
+  let html = '';
+
+  switch(prankId) {
+    case 'fakeCall':
+      html = `<h3>📞 Fake Call Setup</h3>
+        <div class="setup-fg"><label>Caller Name</label><input id="s_callerName" value="Mom ❤️" placeholder="Enter name"></div>
+        <div class="setup-fg"><label>Call Type</label><select id="s_callType"><option value="incoming">Incoming Call</option><option value="video">Video Call</option></select></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeCall')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeWhatsapp':
+      html = `<h3>💬 Fake WhatsApp Setup</h3>
+        <div class="setup-fg"><label>Contact Name</label><input id="s_waName" value="Crush 💕" placeholder="Contact name"></div>
+        <div class="setup-fg"><label>Messages (one per line)</label><textarea id="s_waMessages" rows="4" style="resize:none;font-family:inherit;">Hey, are you free tonight? 😏
+I am good what about you...  
+i want  to tell you something important...
+what? ... tell me fast 
+I think I like you...
+oh really? I like you too!
+ bete miaooo gop.. gop.. gop.. gop i am Just kidding 😂 PRANKED!
+tum har bar aesa kerti ho yarr..🤨🤨😒</textarea></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeWhatsapp')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeBattery':
+      html = `<h3>🪫 Fake Battery Alert</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Shows a scary battery draining animation!</p>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeBattery')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeVirus':
+      html = `<h3>🦠 Fake Virus Scan</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Simulates a terrifying virus detection!</p>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeVirus')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeUpdate':
+      html = `<h3>🔄 Fake System Update</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">A never-ending Windows-style update!</p>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeUpdate')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeBroken':
+      html = `<h3>💥 Broken Screen</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Realistic cracked screen effect!</p>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeBroken')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakePolice':
+      html = `<h3>🚔 Fake Police Call</h3>
+        <div class="setup-fg"><label>Reason</label><input id="s_policeReason" value="Suspicious Activity Detected" placeholder="Enter reason"></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakePolice')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeInsta':
+      html = `<h3>📸 Instagram Ban Alert</h3>
+        <div class="setup-fg"><label>Instagram Username</label><input id="s_instaUser" value="@cooluser_2026" placeholder="@username"></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeInsta')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeOtp':
+      html = `<h3>🔑 Fake OTP</h3>
+        <div class="setup-fg"><label>Service Name</label><input id="s_otpService" value="Your Bank" placeholder="Bank / App name"></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeOtp')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeScreenshot':
+      html = `<h3>📱 Screenshot Sound Loop</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Screen flashes + sound effect loop!</p>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeScreenshot')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeHeat':
+      html = `<h3>🌡️ Phone Overheating</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Rising temperature warning!</p>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeHeat')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeCrash':
+      html = `<h3>⚠️ App Crash Loop</h3>
+        <div class="setup-fg"><label>App Name</label><input id="s_crashApp" value="WhatsApp" placeholder="App name"></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeCrash')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakePayment':
+      html = `<h3>💳 Fake Payment</h3>
+        <div class="setup-fg"><label>Amount</label><input id="s_payAmount" value="₹49,999" placeholder="₹ Amount"></div>
+        <div class="setup-fg"><label>Status</label><select id="s_payStatus"><option value="success">Success ✅</option><option value="failed">Failed ❌</option></select></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakePayment')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeLock':
+      html = `<h3>🔒 Lock Screen Message</h3>
+        <div class="setup-fg"><label>Message</label><textarea id="s_lockMsg" rows="3" style="resize:none;font-family:inherit;">I know what you did last summer... 👀</textarea></div>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeLock')">Start Prank 🎭</button></div>`;
+      break;
+    case 'fakeCamera':
+      html = `<h3>🎥 Camera Recording</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Shows a fake "recording in progress" screen!</p>
+        <div class="setup-actions"><button class="btn-secondary" onclick="closeSetup()">Cancel</button><button class="btn-primary" onclick="startPrank('fakeCamera')">Start Prank 🎭</button></div>`;
+      break;
+  }
+  content.innerHTML = html;
+  modal.classList.add('active');
+}
+function closeSetup() {
+  document.getElementById('setupModal').classList.remove('active');
+}
+
+// ======================== START PRANKS ========================
+function startPrank(id) {
+  closeSetup();
+  const screen = document.getElementById('prankScreen');
+  let html = `<button class="prank-exit" onclick="stopPrank()">✕</button>`;
+
+  try { navigator.vibrate && navigator.vibrate(200); } catch(e) {}
+
+  switch(id) {
+    case 'fakeCall': {
+      const name = document.getElementById('s_callerName')?.value || 'Unknown';
+      const type = document.getElementById('s_callType')?.value || 'incoming';
+      const imgHtml = userImage ? `<img src="${userImage}" alt="">` : '<span style="font-size:3rem;line-height:94px;">👤</span>';
+      html += `<div class="fake-call-screen" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="caller-img">${imgHtml}</div>
+        <div class="caller-name">${name}</div>
+        <div class="call-status">${type === 'video' ? '📹 Incoming Video Call...' : '📞 Incoming Call...'}</div>
+        <div class="call-actions">
+          <button class="call-btn call-decline" onclick="stopPrank()">📵</button>
+          <button class="call-btn call-accept" onclick="acceptCall(this)">📞</button>
+        </div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      startVibrationLoop();
+      break;
+    }
+    case 'fakeWhatsapp': {
+      const name = document.getElementById('s_waName')?.value || 'Contact';
+      const msgs = (document.getElementById('s_waMessages')?.value || 'Hello!').split('\n').filter(m=>m.trim());
+      const imgHtml = userImage ? `<img src="${userImage}" alt="">` : '';
+      html += `<div class="fake-whatsapp" style="width:100%;height:100%;display:flex;flex-direction:column;">
+        <div class="wa-header">
+          <div class="wa-avatar">${imgHtml || '<span style="font-size:1.2rem;line-height:36px;display:block;text-align:center;">👤</span>'}</div>
+          <div><div class="wa-name">${name}</div><div class="wa-online">online</div></div>
+        </div>
+        <div class="wa-messages" id="waMessages"></div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      // Animate messages
+      const msgContainer = document.getElementById('waMessages');
+      let i = 0;
+      activePrankInterval = setInterval(() => {
+        if (i >= msgs.length) { clearInterval(activePrankInterval); return; }
+        const div = document.createElement('div');
+        div.className = 'wa-msg ' + (i % 2 === 0 ? 'received' : 'sent');
+        const now = new Date();
+        div.innerHTML = `${msgs[i]}<div class="time">${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}</div>`;
+        msgContainer.appendChild(div);
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+        try { navigator.vibrate && navigator.vibrate(50); } catch(e) {}
+        i++;
+      }, 2000);
+      break;
+    }
+    case 'fakeBattery': {
+      html += `<div class="fake-battery" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="battery-icon">🪫</div>
+        <div class="battery-pct" id="battPct">3%</div>
+        <div class="battery-text">Battery critically low!</div>
+        <div class="battery-text" style="margin-top:8px;font-size:0.8rem;">Phone will shut down in <span id="battCountdown">10</span> seconds</div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      let ct = 10, pct = 3;
+      activePrankInterval = setInterval(() => {
+        ct--;
+        if(pct > 1) pct--;
+        document.getElementById('battCountdown').textContent = ct;
+        document.getElementById('battPct').textContent = pct + '%';
+        try { navigator.vibrate && navigator.vibrate(300); } catch(e) {}
+        if(ct <= 0) {
+          clearInterval(activePrankInterval);
+          screen.querySelector('.fake-battery').style.background = '#000';
+          screen.querySelector('.fake-battery').innerHTML = '<div style="color:#333;font-size:0.8rem;">Phone shutting down...</div>';
+        }
+      }, 1000);
+      break;
+    }
+    case 'fakeVirus': {
+      html += `<div class="fake-virus" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="virus-icon">🦠</div>
+        <div class="virus-title">⚠️ VIRUS DETECTED!</div>
+        <div style="font-size:0.85rem;">Scanning system files...</div>
+        <div class="virus-bar"><div class="virus-bar-fill" id="virusBar"></div></div>
+        <div class="virus-found" id="virusFound">Threats found: 0</div>
+        <div class="virus-list" id="virusList"></div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      const viruses = ['Trojan.GenericKD.46', 'Worm.Win32.AutoRun', 'Backdoor.AndroidOS.Ztorg', 'Spyware.KeyLogger.Pro', 'Ransomware.WannaCry.2', 'Rootkit.Boot.Alipop', 'Adware.BrowseFox.BQ'];
+      let prog = 0, found = 0;
+      activePrankInterval = setInterval(() => {
+        prog += Math.random() * 8 + 2;
+        if(prog > 100) prog = 100;
+        document.getElementById('virusBar').style.width = prog + '%';
+        if(Math.random() > 0.4 && found < viruses.length) {
+          found++;
+          document.getElementById('virusFound').textContent = `⚠️ Threats found: ${found}`;
+          document.getElementById('virusList').innerHTML += `<div>❌ ${viruses[found-1]}</div>`;
+          try { navigator.vibrate && navigator.vibrate(500); } catch(e) {}
+        }
+        if(prog >= 100) clearInterval(activePrankInterval);
+      }, 600);
+      break;
+    }
+    case 'fakeUpdate': {
+      html += `<div class="fake-update" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="update-icon">⚙️</div>
+        <div class="update-pct" id="updatePct">0%</div>
+        <div class="update-text">Working on updates...</div>
+        <div class="update-warn">Don't turn off your device</div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      let pct = 0;
+      activePrankInterval = setInterval(() => {
+        pct += Math.random() * 2;
+        if(pct > 38 && pct < 42) pct = 38; // Stuck effect
+        if(pct > 88 && pct < 92) pct = 88;
+        if(pct > 99) pct = 99;
+        document.getElementById('updatePct').textContent = Math.floor(pct) + '%';
+      }, 500);
+      break;
+    }
+    case 'fakeBroken': {
+      html += `<div class="fake-broken" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div class="crack-overlay"></div>
+        <div class="crack-lines" id="crackLines"></div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      // Generate crack lines
+      const cl = document.getElementById('crackLines');
+      const cx = Math.random() * 80 + 10, cy = Math.random() * 80 + 10;
+      for(let i=0; i<30; i++) {
+        const line = document.createElement('div');
+        line.className = 'crack-line';
+        const angle = Math.random() * 360;
+        const len = Math.random() * 200 + 50;
+        line.style.cssText = `left:${cx}%;top:${cy}%;width:${len}px;transform:rotate(${angle}deg);`;
+        cl.appendChild(line);
+      }
+      // Add some spots
+      for(let i=0; i<8; i++) {
+        const spot = document.createElement('div');
+        spot.style.cssText = `position:absolute;width:${Math.random()*6+2}px;height:${Math.random()*6+2}px;border-radius:50%;background:rgba(255,255,255,0.08);left:${Math.random()*100}%;top:${Math.random()*100}%;`;
+        cl.appendChild(spot);
+      }
+      try { navigator.vibrate && navigator.vibrate(1000); } catch(e) {}
+      break;
+    }
+    case 'fakePolice': {
+      const reason = document.getElementById('s_policeReason')?.value || 'Suspicious Activity';
+      html += `<div class="fake-police" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="police-icon">🚔</div>
+        <div class="police-title">INCOMING CALL</div>
+        <div style="font-size:1.1rem;margin:6px 0;">Cyber Crime Police</div>
+        <div style="font-size:0.85rem;opacity:0.7;margin-top:8px;">Reason: ${reason}</div>
+        <div class="call-actions">
+          <button class="call-btn call-decline" onclick="stopPrank()">📵</button>
+          <button class="call-btn call-accept" onclick="this.parentElement.parentElement.querySelector('.police-title').textContent='🔴 CONNECTED'; this.style.display='none';">📞</button>
+        </div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      startVibrationLoop();
+      break;
+    }
+    case 'fakeInsta': {
+      const user = document.getElementById('s_instaUser')?.value || '@user';
+      html += `<div class="fake-insta" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="insta-icon">📸</div>
+        <div class="insta-title">Account Suspended</div>
+        <div class="insta-msg">Your account has been permanently suspended for violating Instagram's Community Guidelines.<br><br>This action cannot be reversed.</div>
+        <div class="insta-id">${user}</div>
+        <div style="margin-top:20px;font-size:0.8rem;opacity:0.7;">Appeal deadline: 24 hours</div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      break;
+    }
+    case 'fakeOtp': {
+      const svc = document.getElementById('s_otpService')?.value || 'Your Bank';
+      const otp = String(Math.floor(1000 + Math.random() * 9000));
+      html += `<div class="fake-otp" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="otp-header"><span class="otp-icon">🔐</span><div><div style="font-weight:700;font-size:1.1rem;">${svc}</div><div style="font-size:0.8rem;color:var(--text-secondary);">Verification Code</div></div></div>
+        <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Your OTP for transaction of ₹49,999 is:</div>
+        <div class="otp-digits" id="otpDigits"></div>
+        <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:16px;">⚠️ Do not share this OTP with anyone</div>
+        <div style="font-size:0.7rem;color:var(--text-secondary);margin-top:6px;">Expires in <span id="otpTimer">30</span>s</div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      const digitsDiv = document.getElementById('otpDigits');
+      otp.split('').forEach((d, i) => {
+        setTimeout(() => {
+          const dd = document.createElement('div');
+          dd.className = 'otp-digit';
+          dd.textContent = d;
+          digitsDiv.appendChild(dd);
+          try { navigator.vibrate && navigator.vibrate(100); } catch(e) {}
+        }, i * 400);
+      });
+      let timer = 30;
+      activePrankInterval = setInterval(() => {
+        timer--;
+        const el = document.getElementById('otpTimer');
+        if(el) el.textContent = timer;
+        if(timer <= 0) clearInterval(activePrankInterval);
+      }, 1000);
+      break;
+    }
+    case 'fakeScreenshot': {
+      html += `<div class="fake-screenshot" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="ss-icon">📸</div>
+        <div style="font-size:1.2rem;font-weight:700;margin-bottom:8px;">Screenshot Captured!</div>
+        <div style="font-size:0.85rem;color:var(--text-secondary);">Someone is taking screenshots...</div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      const flash = document.getElementById('ssFlash');
+      activePrankInterval = setInterval(() => {
+        flash.classList.add('active');
+        try { navigator.vibrate && navigator.vibrate(50); } catch(e) {}
+        playClickSound();
+        setTimeout(() => flash.classList.remove('active'), 150);
+      }, 2500);
+      break;
+    }
+    case 'fakeHeat': {
+      html += `<div class="fake-heat" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="heat-icon">🌡️</div>
+        <div class="heat-temp" id="heatTemp">42°C</div>
+        <div style="font-size:1.1rem;font-weight:700;">⚠️ OVERHEATING WARNING</div>
+        <div style="font-size:0.85rem;opacity:0.8;margin-top:8px;">Device temperature is critically high!</div>
+        <div style="font-size:0.75rem;opacity:0.6;margin-top:12px;">Please close all apps and let device cool down</div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      let temp = 42;
+      activePrankInterval = setInterval(() => {
+        temp += Math.random() * 3;
+        if(temp > 78) temp = 78;
+        document.getElementById('heatTemp').textContent = Math.floor(temp) + '°C';
+        try { navigator.vibrate && navigator.vibrate(200); } catch(e) {}
+      }, 1000);
+      break;
+    }
+    case 'fakeCrash': {
+      const app = document.getElementById('s_crashApp')?.value || 'App';
+      html += `<div class="fake-crash" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="crash-box" id="crashBox">
+          <div class="crash-icon">⚠️</div>
+          <div class="crash-title">${app} keeps stopping</div>
+          <div class="crash-msg">This app has crashed repeatedly.</div>
+          <button class="crash-btn-fake" id="crashRetry">Open app again</button>
+        </div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      document.getElementById('crashRetry').onclick = function() {
+        const box = document.getElementById('crashBox');
+        box.style.display = 'none';
+        setTimeout(() => {
+          box.style.display = 'block';
+          try { navigator.vibrate && navigator.vibrate(300); } catch(e) {}
+        }, 800);
+      };
+      break;
+    }
+    case 'fakePayment': {
+      const amount = document.getElementById('s_payAmount')?.value || '₹49,999';
+      const status = document.getElementById('s_payStatus')?.value || 'success';
+      const isSuccess = status === 'success';
+      html += `<div class="fake-payment ${status}" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="payment-icon">${isSuccess ? '✅' : '❌'}</div>
+        <div style="font-size:1.3rem;font-weight:800;">${isSuccess ? 'Payment Successful!' : 'Payment Failed!'}</div>
+        <div class="payment-amount">${amount}</div>
+        <div style="font-size:0.85rem;opacity:0.8;margin-top:8px;">${isSuccess ? 'Debited from your account' : 'Amount debited but not received'}</div>
+        <div style="font-size:0.75rem;opacity:0.6;margin-top:16px;">Transaction ID: TXN${Math.floor(Math.random()*9999999)}</div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      try { navigator.vibrate && navigator.vibrate(isSuccess ? 200 : [200,100,200]); } catch(e) {}
+      break;
+    }
+    case 'fakeLock': {
+      const msg = document.getElementById('s_lockMsg')?.value || 'I know what you did...';
+      const now = new Date();
+      const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const dateStr = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+      html += `<div class="fake-lock" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="lock-time" id="lockTime">${timeStr}</div>
+        <div class="lock-date">${dateStr}</div>
+        <div class="lock-msg-box">
+          <div class="lock-msg-app">📩 Messages now</div>
+          <div class="lock-msg-text">${msg}</div>
+        </div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      activePrankInterval = setInterval(() => {
+        const n = new Date();
+        document.getElementById('lockTime').textContent = n.getHours().toString().padStart(2,'0') + ':' + n.getMinutes().toString().padStart(2,'0');
+      }, 1000);
+      break;
+    }
+    case 'fakeCamera': {
+      html += `<div class="fake-camera" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div class="rec-dot"></div>
+        <div class="rec-label">● REC</div>
+        <div class="rec-timer" id="recTimer">00:00:00</div>
+        <div class="camera-grid"></div>
+        <div class="camera-crosshair"></div>
+      </div>`;
+      screen.innerHTML = html;
+      screen.classList.add('active');
+      let secs = 0;
+      activePrankInterval = setInterval(() => {
+        secs++;
+        const h = String(Math.floor(secs/3600)).padStart(2,'0');
+        const m = String(Math.floor((secs%3600)/60)).padStart(2,'0');
+        const s = String(secs%60).padStart(2,'0');
+        document.getElementById('recTimer').textContent = `${h}:${m}:${s}`;
+      }, 1000);
+      break;
+    }
+  }
+}
+
+function stopPrank() {
+  if(activePrankInterval) { clearInterval(activePrankInterval); activePrankInterval = null; }
+  if(activePrankTimeout) { clearTimeout(activePrankTimeout); activePrankTimeout = null; }
+  try { navigator.vibrate && navigator.vibrate(0); } catch(e) {}
+  const screen = document.getElementById('prankScreen');
+  screen.classList.remove('active');
+  screen.innerHTML = '';
+  document.getElementById('ssFlash').classList.remove('active');
+  stopVibrationLoop();
+}
+
+function acceptCall(btn) {
+  btn.style.display = 'none';
+  const statusEl = btn.closest('.fake-call-screen').querySelector('.call-status');
+  statusEl.textContent = '🔴 Connected 00:00';
+  let s = 0;
+  stopVibrationLoop();
+  activePrankInterval = setInterval(() => {
+    s++;
+    const m = String(Math.floor(s/60)).padStart(2,'0');
+    const sec = String(s%60).padStart(2,'0');
+    statusEl.textContent = `🔴 Connected ${m}:${sec}`;
+  }, 1000);
+}
+
+// Vibration loop
+let vibLoop = null;
+function startVibrationLoop() {
+  try {
+    if(navigator.vibrate) {
+      vibLoop = setInterval(() => navigator.vibrate([200,100,200,100,200]), 1500);
+    }
+  } catch(e) {}
+}
+function stopVibrationLoop() {
+  if(vibLoop) { clearInterval(vibLoop); vibLoop = null; }
+  try { navigator.vibrate && navigator.vibrate(0); } catch(e) {}
+}
+
+// Simple click sound using AudioContext
+function playClickSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 4000;
+    osc.type = 'sine';
+    gain.gain.value = 0.3;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    osc.stop(ctx.currentTime + 0.1);
+  } catch(e) {}
+}
+
+// Close setup on bg click
+document.getElementById('setupModal').addEventListener('click', function(e) {
+  if(e.target === this) closeSetup();
+});
+// ======================== OTHER APPS LINKS ========================
+function openLink(url) {
+  window.open(url, '_blank');
+}
+
+
+</script>
+</body>
+</html>
